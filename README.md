@@ -2,7 +2,7 @@
 
 # API - Cifra de Vernam
 
-Documentação disponível em https://cifradevernan.vercel.app/docs
+Documentação disponível em https://cifradevernam.vercel.app/docs
 
 ## Este projeto se trata de uma API com dois endpoints:
 
