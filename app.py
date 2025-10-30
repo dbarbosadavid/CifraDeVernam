@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 app = FastAPI(
-    title="Cifra de Vernam: API", 
+    title="Cifra de Vernam: API",
     openapi_url="/cifra-de-vernam",
     description="Esta API cifra e decifra textos com a Cifra de Vernam, usando XOR entre o texto e a chave fornecida."
     )
@@ -30,7 +30,7 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
         content={"mensagem": f"ERRO! {exc.detail}"},
     )
 
-@app.post("/cifrar", 
+@app.post("/cifrar",
           summary="Cifra o texto informado com a Cifra de Vernam",
           description="Serve para cifrar um texto com a Cifra de Vernam. O usuário deve informar o texto e uma chave.",
           response_model=TextoCifrado)
@@ -38,20 +38,23 @@ def cifrar(cifrar: Cifrar):
     texto_puro = cifrar.texto_puro
     chave = cifrar.chave
     verificar(texto_puro, chave)
+    texto_cifrado = texto_xor(texto_puro, chave)
+    response = TextoCifrado(texto_cifrado=texto_cifrado)
 
-    return texto_xor(texto_puro, chave)
+    return response
 
-@app.post("/decifrar", 
-          summary="Decifra o texto com a Cifra de Vernan", 
+@app.post("/decifrar",
+          summary="Decifra o texto com a Cifra de Vernan",
           description="Serve para decifrar um texto cifrado com a Cifra de Vernan. O usuário deve fornecer o texto cifrado e a chave utilizada na cifragem.",
-          response_model=TextoDecifrado,
-          response_description="Texto decifrado!")
+          response_model=TextoDecifrado)
 def decifrar(decifrar: Decifrar):
     texto_cifrado = decifrar.texto_cifrado
     chave = decifrar.chave
     verificar(texto_cifrado, chave)
+    texto_decifrado = texto_xor(texto_cifrado, chave)
+    response = TextoDecifrado(texto_decifrado=texto_decifrado)
 
-    return texto_xor(texto_cifrado, chave)
+    return response
 
 
 def verificar(
@@ -75,7 +78,7 @@ def verificar(
 
 def texto_xor(
         texto: str,
-        chave: str,
+        chave: str
 ):
     texto_xor = ''
 
@@ -98,6 +101,4 @@ def texto_xor(
         character = chr(decimal_value)
         texto_xor += character
 
-    response = TextoCifrado(texto_cifrado=texto_xor)
-
-    return response
+    return texto_xor
